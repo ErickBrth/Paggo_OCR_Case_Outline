@@ -46,6 +46,7 @@ services:
       BACKEND_URL: http://localhost:3001
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
     volumes:
       - ./frontend:/app
       - ./frontend:/src/node_modules
