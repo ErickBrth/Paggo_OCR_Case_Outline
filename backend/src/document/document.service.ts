@@ -1,37 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDocumentDto } from './dto/create-document.dto';
-import { Document } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CreateDocumentDto } from './dto/create-document.dto';
+import { LlmService } from '../llm/llm.service';
 
 @Injectable()
 export class DocumentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private llmService: LlmService,
+  ) {}
 
-  async create(
-    userId: string,
-    dto: CreateDocumentDto,
-    filepath: string,
-  ): Promise<Document> {
-    return await this.prisma.document.create({
+  async create(userId: string, dto: CreateDocumentDto, filepath: string) {
+    const ocrText = dto.text || 'Texto extraído do documento (simulado)';
+    const llmSummary = await this.llmService.summarizeText(ocrText);
+  
+    return this.prisma.document.create({
       data: {
         filename: dto.filename,
-        text: dto.text ?? '',
+        text: ocrText,
+        llmSummary,
         filepath,
-        user: { connect: { id: userId } },
+        user: {
+          connectOrCreate: {
+            where: { sub: userId },
+            create: {
+              sub: userId,
+              email: dto.email,
+            },
+          },
+        },
+      },
+    });
+  }
+  
+
+  async findAllByUser(userId: string) {
+    return this.prisma.document.findMany({
+      where: {
+        user: {
+          sub: userId,
+        },
       },
     });
   }
 
-  async findAllByUser(userId: string): Promise<Document[]> {
-    return await this.prisma.document.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-
-  async findOne(id: string): Promise<Document | null> {
-    return await this.prisma.document.findUnique({
-      where: { id },
-    });
+  async findOne(id: string) {
+    return this.prisma.document.findUnique({ where: { id } });
   }
 }

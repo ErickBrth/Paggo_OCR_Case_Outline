@@ -48,11 +48,16 @@ export class DocumentController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<{ message: string; document: Document }> {
     const userId = req.user?.sub;
-    if (!userId) throw new UnauthorizedException('Usuário não autenticado');
+    const email = req.user?.email;
+
+    if (!userId || !email) {
+      throw new UnauthorizedException('Usuário não autenticado');
+    }
 
     const dto: CreateDocumentDto = {
       filename: file.originalname,
-      text: 'Texto extraído do documento (simulado)', // substituir com OCR real depois
+      text: 'Texto extraído do documento',
+      email,
     };
 
     const saved = await this.documentService.create(userId, dto, file.path);

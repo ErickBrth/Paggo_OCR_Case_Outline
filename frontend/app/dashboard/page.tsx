@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Toaster } from 'react-hot-toast'
 import UploadForm from '../components/UploadForm'
+import DocumentList from '../components/DocumentList'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -20,6 +21,7 @@ export default function DashboardPage() {
       <Toaster />
       <h1 className="text-2xl font-bold">Bem-vindo, {session.user?.name}</h1>
       <UploadForm />
+      <DocumentList />
       <button
         onClick={() => signOut()}
         className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mt-4"

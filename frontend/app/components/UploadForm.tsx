@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { useSession } from 'next-auth/react'
 
 export default function UploadForm() {
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
+  const { data: session } = useSession()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -14,13 +16,39 @@ export default function UploadForm() {
       return
     }
 
+    if (!session?.idToken) {
+      toast.error('Usuário não autenticado.')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+
     setLoading(true)
-    // Simula envio sem backend
-    setTimeout(() => {
-      toast.success(`Simulado envio: ${file.name}`)
-      setLoading(false)
+
+    try {
+      const res = await fetch('http://localhost:3001/documents/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${session.idToken}`,
+        },
+      })
+
+      if (!res.ok) {
+        throw new Error('Falha no upload')
+      }
+
+      const data = await res.json()
+      toast.success('Upload realizado com sucesso!')
+      console.log('Resposta do backend:', data)
       setFile(null)
-    }, 1000)
+    } catch (error: any) {
+      console.error(error)
+      toast.error(error.message || 'Erro ao enviar o arquivo')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

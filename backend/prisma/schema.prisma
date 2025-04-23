@@ -10,14 +10,14 @@ generator client {
   }
   
   model User {
-    id        String     @id @default(uuid())
-    sub       String     @unique
-    email     String     @unique
-    documents Document[]
-    createdAt DateTime   @default(now())
-  }
-  
-  model Document {
+  id        String     @id @default(uuid())
+  sub       String     @unique
+  email     String     @unique
+  documents Document[]
+  createdAt DateTime   @default(now())
+}
+
+model Document {
   id         String   @id @default(uuid())
   filename   String
   text       String
@@ -27,3 +27,4 @@ generator client {
   userId     String
   user       User     @relation(fields: [userId], references: [id])
 }
+

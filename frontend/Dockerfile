@@ -1,5 +1,5 @@
 # frontend/Dockerfile
-FROM node:18
+FROM node:23
 
 RUN apt-get update && apt-get install -y build-essential python3
 
