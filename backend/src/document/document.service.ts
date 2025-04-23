@@ -2,16 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { LlmService } from '../llm/llm.service';
+import { OcrService } from '../ocr/ocr.service';
+
 
 @Injectable()
 export class DocumentService {
   constructor(
     private prisma: PrismaService,
     private llmService: LlmService,
+    private ocrService: OcrService,
   ) {}
 
   async create(userId: string, dto: CreateDocumentDto, filepath: string) {
-    const ocrText = dto.text || 'Texto extraído do documento (simulado)';
+    const ocrText = await this.ocrService.extractText(filepath); // 👈 OCR real
+  
     const llmSummary = await this.llmService.summarizeText(ocrText);
   
     return this.prisma.document.create({
@@ -32,6 +36,7 @@ export class DocumentService {
       },
     });
   }
+  
   
 
   async findAllByUser(userId: string) {
