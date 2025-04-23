@@ -1,23 +1,35 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
+import UploadForm from '../components/UploadForm'
 
-export default function LoginPage() {
+export default function DashboardPage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/')
+    }
+  }, [status, router])
+
+  if (status === 'loading') return <p>Carregando...</p>
+  if (status === 'unauthenticated') return null
+
   return (
-    <main className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-[#f2f2f2] to-[#e0e0e0] p-4">
+    <main className="p-6 max-w-2xl mx-auto space-y-6">
       <Toaster />
-      <div className="bg-white rounded-2xl shadow-2xl p-10 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-center text-gray-700 mb-8">
-          Bem-vindo ao Paggo OCR
-        </h1>
-        <button 
-          onClick={() => signIn('google', { callbackUrl: '/pages/dashboard' })}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded w-full transition"
-        >
-          Entrar com Google
-        </button>
-      </div>
+      <h1 className="text-2xl font-bold">Bem-vindo, {session?.user?.name}</h1>
+      <UploadForm />
+      <button
+        onClick={() => signOut()}
+        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mt-4"
+      >
+        Sair
+      </button>
     </main>
   )
 }

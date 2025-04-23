@@ -1,9 +1,9 @@
 'use client'
 
-import UploadForm from '@/src/components/UploadForm'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Toaster } from 'react-hot-toast'
+import UploadForm from '../components/UploadForm'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -11,7 +11,7 @@ export default function DashboardPage() {
 
   if (status === 'loading') return <p>Carregando...</p>
   if (!session) {
-    router.push('/')
+    router.push('/login')
     return null
   }
 

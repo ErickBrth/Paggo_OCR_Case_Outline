@@ -1,12 +1,7 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    css: {
-      // força usar PostCSS ao invés do lightningcss
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      implementation: require('postcss'),
-    },
-  },
-}
+import type { NextConfig } from "next";
 
-module.exports = nextConfig
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
