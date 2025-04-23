@@ -17,7 +17,7 @@ interface AuthenticatedRequest extends Request {
 @Injectable()
 export class GoogleAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest<Request>();
+    const req = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -31,10 +31,9 @@ export class GoogleAuthGuard implements CanActivate {
         `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`,
       );
 
-      const sub = response.data.sub;
-      const email = (response.data.email(req as AuthenticatedRequest).user = {
-        sub,
-      });
+      const { sub, email } = response.data;
+
+      req.user = { sub, email };
 
       return true;
     } catch (error) {

@@ -1,27 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDocumentDto } from './dto/create-document.dto';
-import { Document } from './entities/document.entity';
+import { Document } from '@prisma/client';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class DocumentService {
-  private documents: Document[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  create(createDocumentDto: CreateDocumentDto): Document {
-    const newDocument: Document = {
-      id: (this.documents.length + 1).toString(),
-      filename: createDocumentDto.filename,
-      text: 'Texto extraído do documento (simulado)',
-      createdAt: new Date().toISOString(),
-    };
-    this.documents.push(newDocument);
-    return newDocument;
+  async create(
+    userId: string,
+    dto: CreateDocumentDto,
+    filepath: string,
+  ): Promise<Document> {
+    return await this.prisma.document.create({
+      data: {
+        filename: dto.filename,
+        text: dto.text ?? '',
+        filepath,
+        user: { connect: { id: userId } },
+      },
+    });
   }
 
-  findAll(): Document[] {
-    return this.documents;
+  async findAllByUser(userId: string): Promise<Document[]> {
+    return await this.prisma.document.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
-  findOne(id: string): Document | undefined {
-    return this.documents.find((doc) => doc.id === id);
+  async findOne(id: string): Promise<Document | null> {
+    return await this.prisma.document.findUnique({
+      where: { id },
+    });
   }
 }

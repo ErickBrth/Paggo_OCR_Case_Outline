@@ -16,8 +16,9 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
- "exclude": ["node_modules", "dist", ".eslintrc.cjs"]
+  "include": ["src/**/*.ts", "test/**/*.ts", ".eslintrc.cjs"],
+  "exclude": ["node_modules", "dist"]
 }

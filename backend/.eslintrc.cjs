@@ -1,21 +1,27 @@
 module.exports = {
-    parser: '@typescript-eslint/parser',
-    parserOptions: {
-      sourceType: 'module',
-    },
-    plugins: ['@typescript-eslint', 'prettier'],
-    extends: [
-      'plugin:@typescript-eslint/recommended',
-      'plugin:prettier/recommended',
-    ],
-    root: true,
-    env: {
-      node: true,
-    },
-    rules: {
-      '@typescript-eslint/no-unused-vars': ['warn'],
-      '@typescript-eslint/no-explicit-any': 'off',
-      'prettier/prettier': ['warn'],
-    },
-  };
-  
+  root: true,
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    sourceType: 'module',
+    project: ['./tsconfig.json'],
+  },
+  plugins: ['@typescript-eslint', 'prettier'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+  ],
+  env: {
+    node: true,
+    jest: true,
+    es2021: true,
+  },
+  rules: {
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/no-unsafe-return': 'warn',
+    '@typescript-eslint/require-await': 'warn',
+    '@typescript-eslint/no-floating-promises': 'warn',
+    '@typescript-eslint/no-redundant-type-constituents': 'off',
+  }  
+};
