@@ -10,6 +10,14 @@ COPY . .
 
 RUN npx prisma generate
 
+RUN apt-get update && apt-get install -y \
+  tesseract-ocr \
+  tesseract-ocr-por \
+  tesseract-ocr-eng \
+  graphicsmagick \
+  ghostscript \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN npm run build
 
 CMD ["npm", "run", "start:prod"]

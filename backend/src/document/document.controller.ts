@@ -17,6 +17,7 @@ import { GoogleAuthGuard } from '../auth/google.guard';
 import { Document } from '@prisma/client';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { Request } from 'express';
+import { OcrService } from '../ocr/ocr.service';
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -28,7 +29,10 @@ interface AuthenticatedRequest extends Request {
 @Controller('documents')
 @UseGuards(GoogleAuthGuard)
 export class DocumentController {
-  constructor(private readonly documentService: DocumentService) {}
+  constructor(
+    private readonly documentService: DocumentService,
+    private readonly ocrService: OcrService,
+  ) {}
 
   @Post('upload')
   @UseInterceptors(
@@ -54,9 +58,15 @@ export class DocumentController {
       throw new UnauthorizedException('Usuário não autenticado');
     }
 
+    const isPdf = file.originalname.toLowerCase().endsWith('.pdf');
+    const ocrText = isPdf
+      ? await this.ocrService.extractTextFromPdf(file.path)
+      : await this.ocrService.extractText(file.path);
+
+      console.log(ocrText)
     const dto: CreateDocumentDto = {
       filename: file.originalname,
-      text: 'Texto extraído do documento',
+      text: ocrText,
       email,
     };
 

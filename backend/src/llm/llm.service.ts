@@ -37,12 +37,12 @@ export class LlmService {
       return response.data.choices[0].message.content.trim();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 429) {
-        this.logger.warn('❗ Limite da OpenAI atingido (429).');
+        this.logger.warn(' Limite da OpenAI atingido (429).');
         return '⚠️ Você atingiu o limite de uso gratuito da OpenAI. Tente novamente mais tarde.';
       }
 
       this.logger.error('Erro ao chamar o GPT:', error.message);
-      return '❌ Erro ao gerar explicação com a LLM.';
+      return ' Erro ao gerar explicação com a LLM.';
     }
   }
 }
