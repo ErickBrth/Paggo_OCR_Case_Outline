@@ -29,24 +29,24 @@ services:
       - ./backend/.env
     command: sh -c "npx prisma generate && npm run start:prod"
 
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    restart: always
-    ports:
-      - '3000:3000'
-    depends_on:
-      - backend
-    environment:
-      - NEXTAUTH_URL=http://localhost:3000
-      - NEXTAUTH_SECRET
-      - BACKEND_URL=http://localhost:3001
-      - GOOGLE_CLIENT_ID
-      - GOOGLE_CLIENT_SECRET
-    volumes:
-      - ./frontend:/app
-    env_file:
-      - ./frontend/.env
+  # frontend:
+  #   build: ./frontend
+  #   container_name: frontend
+  #   restart: always
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - backend
+  #   environment:
+  #     - NEXTAUTH_URL=http://localhost:3000
+  #     - NEXTAUTH_SECRET
+  #     - BACKEND_URL=http://localhost:3001
+  #     - GOOGLE_CLIENT_ID
+  #     - GOOGLE_CLIENT_SECRET
+  #   volumes:
+  #     - ./frontend:/app
+  #   env_file:
+  #     - ./frontend/.env
 
 volumes:
   postgres_data:

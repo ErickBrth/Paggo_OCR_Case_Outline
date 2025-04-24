@@ -3,10 +3,10 @@ import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { LlmService } from '../llm/llm.service';
-import { OcrModule } from 'src/ocr/ocr.module';
+import { OcrModule } from '../ocr/ocr.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, OcrModule],
   controllers: [DocumentController],
   providers: [DocumentService, LlmService, OcrModule],
 })
