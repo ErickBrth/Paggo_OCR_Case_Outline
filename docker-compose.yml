@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ocrdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    ports:
+      - '3001:3001'
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ocrdb
+      - OPENAI_API_KEY
+      - JWT_SECRET
+    # volumes:
+    #   - ./backend:/app
+    env_file:
+      - ./backend/.env
+    command: sh -c "npx prisma generate && npm run start:prod"
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    environment:
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET
+      - BACKEND_URL=http://localhost:3001
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+    volumes:
+      - ./frontend:/app
+    env_file:
+      - ./frontend/.env
+
+volumes:
+  postgres_data:
