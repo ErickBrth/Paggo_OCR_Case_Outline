@@ -37,8 +37,13 @@ export default function UploadForm({ onUploadSuccess }: Props) {
       toast.success('Documento processado com sucesso!', { id: toastId })
       onUploadSuccess?.()
     } catch (err) {
+      if (err instanceof Error) {
+        console.error('Erro:', err.message)
+      } else {
+        console.error('Erro desconhecido:', err)
+      }
       toast.error('Erro ao enviar documento', { id: toastId })
-    } finally {
+    }     finally {
       setUploading(false)
       setFile(null)
     }

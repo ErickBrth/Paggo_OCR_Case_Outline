@@ -1,8 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import { signIn } from 'next-auth/react'
-import { Toaster, toast } from 'react-hot-toast'
+import { Toaster} from 'react-hot-toast'
 
 export default function LoginPage() {
   return (
