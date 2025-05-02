@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Toaster, toast } from 'react-hot-toast'
 import UploadForm from '../components/UploadForm'
 import DocumentList from '../components/DocumentList'
@@ -21,7 +21,7 @@ export default function DashboardPage() {
   const [documents, setDocuments] = useState<Document[]>([])
   const [loadingDocs, setLoadingDocs] = useState(false)
 
-  const loadDocuments = async () => {
+  const loadDocuments = useCallback(async () => {
     if (!session?.idToken) return
     setLoadingDocs(true)
     try {
@@ -30,22 +30,29 @@ export default function DashboardPage() {
           Authorization: `Bearer ${session.idToken}`,
         },
       })
+
+      if (!res.ok) throw new Error('Erro na resposta da API')
+
       const data = await res.json()
       setDocuments(data)
-    } catch (err: any) {
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message)
+      }
       toast.error('Erro ao buscar documentos')
     } finally {
       setLoadingDocs(false)
     }
-  }
+  }, [session?.idToken])
 
   useEffect(() => {
     if (status === 'authenticated') {
       loadDocuments()
     }
-  }, [status])
+  }, [status, loadDocuments])
 
   if (status === 'loading') return <p>Carregando...</p>
+
   if (!session) {
     router.push('/login')
     return null
