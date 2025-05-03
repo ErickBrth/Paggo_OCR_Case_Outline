@@ -49,11 +49,11 @@ export class OcrService {
 
     const outputDir = path.dirname(pdfPath);
     const converter = convertPdfToImage(pdfPath, {
-      density: 120,
+      density: 150,
       savePath: outputDir,
       format: 'png',
-      width: 900,
-      height: 1300,
+      width: 1200,
+      height: 1600,
     });
 
     const maxPages = 3;
