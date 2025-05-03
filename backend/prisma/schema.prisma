@@ -3,18 +3,17 @@ generator client {
   binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
 }
 
-  
-  datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
-  }
-  
-  model User {
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
   id        String     @id @default(uuid())
   sub       String     @unique
   email     String     @unique
-  documents Document[]
   createdAt DateTime   @default(now())
+  documents Document[]
 }
 
 model Document {
@@ -27,4 +26,3 @@ model Document {
   userId     String
   user       User     @relation(fields: [userId], references: [id])
 }
-
