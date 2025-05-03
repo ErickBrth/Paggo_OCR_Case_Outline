@@ -25,7 +25,7 @@ export default function DashboardPage() {
     if (!session?.idToken) return
     setLoadingDocs(true)
     try {
-      const res = await fetch('http://localhost:3001/documents', {
+      const res = await fetch('https://paggo-ocr-case-outline.onrender.com/documents', {
         headers: {
           Authorization: `Bearer ${session.idToken}`,
         },

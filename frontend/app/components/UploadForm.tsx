@@ -24,7 +24,7 @@ export default function UploadForm({ onUploadSuccess }: Props) {
     const toastId = toast.loading('Enviando...')
 
     try {
-      const res = await fetch('http://localhost:3001/documents/upload', {
+      const res = await fetch('https://paggo-ocr-case-outline.onrender.com/documents/upload', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${session?.idToken}`,
